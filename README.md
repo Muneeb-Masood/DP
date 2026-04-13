@@ -37,6 +37,22 @@ The Bus ticket application is composed of the following Features:
 
 * This version does not support dynamic seat data being stored from cloud.
 
+### Backend Design Patterns Map
+
+* Factory Pattern: `backend/patterns/factory/BusFactory.js` creates typed bus objects (AC, Non-AC, Sleeper).
+* Builder Pattern: `backend/patterns/builder/TicketBuilder.js` builds ticket options and total fare step by step.
+* Strategy Pattern: `backend/patterns/strategy/PaymentStrategyFactory.js` and payment strategies choose payment behavior at runtime.
+* Strategy Pattern (Fare): `backend/patterns/strategy/FareStrategyContext.js` switches between standard and peak-hour fare rules.
+* Observer Pattern: `backend/patterns/observer/BookingNotifier.js` notifies email/logger/analytics observers for booking events.
+* Singleton Pattern: `backend/patterns/singleton/BookingService.js`, `backend/patterns/singleton/SeatLockManager.js`, and `backend/patterns/singleton/AnalyticsService.js` maintain shared app state/services.
+
+### Backend Environment Variables
+
+Create `backend/.env` from `backend/.env.example` and set these values:
+
+* `MONGO_URI`
+* `JWT_SECRET`
+
 
 This project also demonstrates:
 

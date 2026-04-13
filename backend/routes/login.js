@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const { JWT_SECRET } = require('../config/keys');
 
 const router = express.Router();
 
@@ -26,14 +27,10 @@ router.post("/login", async (req, res) => {
     }
 
     if (!isMatch) {
-      isMatch = password === user.password;
-    }
-
-    if (!isMatch) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, "top_secret", {
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
       expiresIn: "1h",
     });
 

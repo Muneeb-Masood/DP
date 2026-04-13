@@ -3,7 +3,6 @@ var router = express.Router();
 var User = require('../models/User')
 var bcrypt = require("bcryptjs");
 var moment = require('moment');
-var bodyParser = require('body-parser')
 
 
 
@@ -12,10 +11,7 @@ router.get('/', (req, res) => {
     res.send("Register Here")
 });
 
-//Body-Parser
-var jsonParser = bodyParser.json()
-
-router.post('/', jsonParser, async (req, res) => {
+router.post('/', async (req, res) => {
     //Hash Password 
     const hashPassword = await bcrypt.hash(req.body.password, 10)
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email;

@@ -14,7 +14,6 @@ const EmailService = require('../patterns/observer/EmailService');
 const LoggerService = require('../patterns/observer/LoggerService');
 const AnalyticsService = require('../patterns/singleton/AnalyticsService');
 
-// Observer setup is done once and reused for all booking events.
 const bookingNotifier = new BookingNotifier();
 bookingNotifier.subscribe(new EmailService());
 bookingNotifier.subscribe(new LoggerService());
@@ -55,14 +54,6 @@ function calculateDynamicFare(baseFare, busInfo, ticketOptions = {}) {
         }
     };
 }
-
-
-// router.get('/', (req, res) => {
-//     bus.find({ companyName, startCity, totalseats, availableseats }, (err, result) => {
-//         if (err) res.send(err)
-//         else res.json({ result })
-//     })
-// })
 
 router.post('/', (req, res) => {
     const startCity = typeof req.body.startCity === 'string' ? req.body.startCity.trim() : '';
@@ -137,7 +128,6 @@ router.post('/fare-preview', async (req, res) => {
     }
 })
 
-// Example usage endpoint for design patterns in booking flow.
 router.post('/create', async (req, res) => {
     const {
         busId,
@@ -160,10 +150,8 @@ router.post('/create', async (req, res) => {
             return res.status(404).json({ status: false, message: 'Bus not found' });
         }
 
-        // Factory Pattern: create a typed bus object (AC/Non-AC/Sleeper).
         const typedBus = BusFactory.createFromModel(selectedBus);
 
-        // Builder Pattern: compose ticket options step-by-step.
         const fareInfo = calculateDynamicFare(typedBus.pricePerSeat, typedBus, ticketOptions);
         const ticket = new TicketBuilder()
             .setBus({
@@ -191,12 +179,10 @@ router.post('/create', async (req, res) => {
         ticket.tax = tax;
         ticket.payableTotal = payableTotal;
 
-        // Strategy Pattern: choose payment behavior dynamically.
         const paymentContext = new PaymentContext();
         paymentContext.setStrategy(PaymentStrategyFactory.create(paymentMethod));
         const paymentResult = paymentContext.pay(ticket.payableTotal);
 
-        // Singleton Pattern: one shared booking service instance.
         const booking = BookingService.createBooking({
             busId: selectedBus._id,
             busNumber: typedBus.busNumber,
@@ -205,7 +191,6 @@ router.post('/create', async (req, res) => {
             payment: paymentResult,
         });
 
-        // Observer Pattern: notify email/logger observers.
         await bookingNotifier.notify({
             bookingId: booking.id,
             passengerName,
@@ -245,28 +230,4 @@ router.get('/analytics', async (req, res) => {
         return res.status(500).json({ status: false, message: 'Unable to fetch analytics', error: error.message });
     }
 })
-
-// router.post('/', (req, res) => {
-//     let newBus = new bus(req.body)
-//     newBus.save((err, bus) => {
-//         if (err) console.log(err)
-//         else res.status(201).json(bus)
-//     })
-// })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports = router;

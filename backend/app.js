@@ -43,7 +43,6 @@ app.use('/register', registerRouter);
 app.use('/booking', bookingRoute);
 app.use('/seat-locks', seatLockRoute);
 
-// OPTIONAL ROUTE (no passport anymore)
 app.use('/user', loggedInPage);
 
 module.exports = app;
